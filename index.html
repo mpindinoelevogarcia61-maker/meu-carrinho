@@ -5,89 +5,194 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vaku Comerci - Angola</title>
     <style>
-        :root { --vaku-orange: #ff5000; --vaku-dark: #1a1a1a; --gray: #f4f4f4; }
-        body { font-family: sans-serif; background: var(--gray); margin: 0; padding-bottom: 220px; }
-        header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); sticky; top: 0; z-index: 100; }
-        .produto-card { background: white; margin: 15px; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .img-container { width: 100%; height: 250px; background: #eee; display: flex; align-items: center; justify-content: center; }
+        :root { --vaku-orange: #ff5000; --vaku-dark: #1a1a1a; --gray: #f4f4f4; --green: #25d366; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--gray); margin: 0; padding-bottom: 250px; }
+        
+        /* Topo */
+        header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        header h1 { margin: 0; font-size: 20px; color: var(--vaku-dark); }
+
+        /* Lista de Produtos */
+        #lista-produtos { padding: 15px; display: flex; flex-direction: column; gap: 20px; }
+        .produto-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .img-container { width: 100%; height: 300px; background: #eee; }
         .img-container img { width: 100%; height: 100%; object-fit: cover; }
+        
         .p-detalhes { padding: 15px; }
+        .p-nome { font-size: 18px; font-weight: bold; margin: 0 0 10px 0; }
         .p-venda { color: var(--vaku-orange); font-size: 22px; font-weight: bold; }
-        .variantes { display: flex; gap: 10px; margin: 10px 0; }
-        .btn-var { border: 2px solid #ddd; padding: 8px 12px; border-radius: 8px; background: white; cursor: pointer; }
-        .btn-var.active { border-color: var(--vaku-orange); color: var(--vaku-orange); }
-        .add-btn { width: 100%; background: var(--vaku-dark); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        .checkout-panel { position: fixed; bottom: 0; width: 100%; background: white; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px; box-sizing: border-box; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); }
-        .btn-whats { width: 100%; background: #25d366; color: white; border: none; padding: 16px; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        .frete-badge { background: #e8f5e9; color: #2e7d32; text-align: center; padding: 5px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-bottom: 10px; }
+        
+        /* Variantes */
+        .titulo-var { font-size: 12px; color: #666; margin-top: 10px; text-transform: uppercase; }
+        .variantes { display: flex; gap: 8px; margin: 8px 0; flex-wrap: wrap; }
+        .btn-var { border: 2px solid #ddd; padding: 8px 12px; border-radius: 8px; background: white; cursor: pointer; font-weight: 600; }
+        .btn-var.active { border-color: var(--vaku-orange); color: var(--vaku-orange); background: #fff5f0; }
+
+        .add-btn { width: 100%; background: var(--vaku-dark); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        /* Painel de Pagamento (Fixo embaixo) */
+        .checkout-panel { position: fixed; bottom: 0; width: 100%; background: white; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px; box-sizing: border-box; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 101; }
+        .badge-frete { background: #e8f5e9; color: #2e7d32; text-align: center; padding: 6px; border-radius: 8px; font-size: 12px; font-weight: bold; margin-bottom: 12px; border: 1px solid #c8e6c9; }
+        
+        select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 12px; font-size: 14px; background: #f9f9f9; }
+        
+        .resumo { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 15px; }
+        .total-linha { display: flex; justify-content: space-between; font-size: 22px; font-weight: bold; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
+
+        .btn-whats { width: 100%; background: var(--green); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
     </style>
 </head>
 <body>
 
-<header><h1>VAKU COMERCI 🇦🇴</h1></header>
+<header>
+    <h1>VAKU COMERCI 🇦🇴</h1>
+</header>
 
-<div class="produto-card">
-    <div class="img-container"><img id="img-p1" src="https://placeholder.com" alt="Produto"></div>
-    <div class="p-detalhes">
-        <h3>Produto Premium Vaku</h3>
-        <p class="p-venda" id="venda-p1">8.000,00 Kz</p>
-        <div class="variantes">
-            <button class="btn-var active" onclick="mudar('p1', 'Opção A', 8000, 'https://placeholder.com', this)">Opção A</button>
-            <button class="btn-var" onclick="mudar('p1', 'Opção B', 9500, 'https://placeholder.com', this)">Opção B</button>
-        </div>
-        <button class="add-btn" onclick="add('Produto Premium', 'p1')">Adicionar ao Carrinho</button>
-    </div>
+<div id="lista-produtos">
+    <!-- Os produtos serão gerados aqui pelo JavaScript -->
 </div>
 
 <div class="checkout-panel">
-    <div class="frete-badge" id="badge-frete">Frete Grátis acima de 20.000 Kz</div>
-    <select id="select-frete" onchange="calcularTotal()" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;">
-        <option value="0">Retirada (Grátis)</option>
-        <option value="2000">Ponto Estratégico (+2.000 Kz)</option>
-        <option value="5000">Entrega Personalizada (+5.000 Kz)</option>
+    <div class="badge-frete" id="aviso-frete">Frete GRÁTIS acima de 20.000 Kz</div>
+    
+    <select id="select-frete" onchange="calcularTotal()">
+        <option value="0">Recolher na Loja (Grátis)</option>
+        <option value="2000">Ponto Estratégico (+ 2.000 Kz)</option>
+        <option value="5000">Entrega ao Domicílio (+ 5.000 Kz)</option>
     </select>
-    <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px;">
-        <span>Total:</span><span><span id="total-val">0,00</span> Kz</span>
+
+    <div class="resumo"><span>Itens:</span> <span><span id="sub-val">0,00</span> Kz</span></div>
+    <div class="resumo"><span>Frete:</span> <span><span id="frete-val">0,00</span> Kz</span></div>
+    
+    <div class="total-linha">
+        <span>Total:</span>
+        <span><span id="total-val">0,00</span> Kz</span>
     </div>
-    <button class="btn-whats" onclick="enviarWhats()">Finalizar via WhatsApp</button>
+
+    <button class="btn-whats" onclick="enviarWhats()">
+        Finalizar Pedido no WhatsApp
+    </button>
 </div>
 
 <script>
-    let config = { p1: { variante: 'Opção A', preco: 8000 } };
-    let carrinho = [];
-    let numeroWhats = "244926008439"; // <--- COLOQUE O SEU NÚMERO AQUI!
+    // ==========================================
+    // CONFIGURAÇÃO DA SUA LOJA (MEXA AQUI)
+    // ==========================================
+    
+    const numeroWhatsApp = "244926008439"; // Seu número configurado
 
-    function mudar(id, nomeVar, preco, foto, el) {
-        config[id] = { variante: nomeVar, preco: preco };
+    const meusProdutos = [
+        {
+            id: 'p1',
+            nome: 'Camisa Polo Vaku',
+            variantes: [
+                { nome: 'Preta', preco: 8500, foto: 'https://placeholder.com' },
+                { nome: 'Branca', preco: 9500, foto: 'https://placeholder.com' },
+                { nome: 'Azul (Promo)', preco: 7000, foto: 'https://placeholder.com' }
+            ]
+        },
+        {
+            id: 'p2',
+            nome: 'Ténis Sport Lux',
+            variantes: [
+                { nome: 'Tamanho 40', preco: 15000, foto: 'https://placeholder.com' },
+                { nome: 'Tamanho 42', preco: 17500, foto: 'https://placeholder.com' }
+            ]
+        }
+    ];
+
+    // ==========================================
+    // LÓGICA DO SISTEMA (NÃO PRECISA MEXER)
+    // ==========================================
+
+    let carrinho = [];
+    let selecaoAtual = {};
+
+    function inicializarLoja() {
+        const container = document.getElementById('lista-produtos');
+        meusProdutos.forEach(p => {
+            // Define a primeira variante como inicial
+            selecaoAtual[p.id] = { nome: p.nome, variante: p.variantes[0].nome, preco: p.variantes[0].preco };
+            
+            const card = document.createElement('div');
+            card.className = 'produto-card';
+            card.innerHTML = `
+                <div class="img-container"><img id="img-${p.id}" src="${p.variantes[0].foto}"></div>
+                <div class="p-detalhes">
+                    <p class="p-nome">${p.nome}</p>
+                    <p class="p-venda" id="venda-${p.id}">${p.variantes[0].preco.toLocaleString('pt-AO')} Kz</p>
+                    <p class="titulo-var">Escolha uma opção:</p>
+                    <div class="variantes">
+                        ${p.variantes.map((v, i) => `
+                            <button class="btn-var ${i===0?'active':''}" 
+                                onclick="mudarOpcao('${p.id}', '${v.nome}', ${v.preco}, '${v.foto}', this)">
+                                ${v.nome}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <button class="add-btn" onclick="adicionar('${p.id}')">Adicionar ao Carrinho</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function mudarOpcao(id, nomeVar, preco, foto, el) {
+        selecaoAtual[id].variante = nomeVar;
+        selecaoAtual[id].preco = preco;
         document.getElementById(`venda-${id}`).innerText = preco.toLocaleString('pt-AO') + " Kz";
         document.getElementById(`img-${id}`).src = foto;
         el.parentElement.querySelectorAll('.btn-var').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
     }
 
-    function add(nome, id) {
-        carrinho.push({ nome: `${nome} (${config[id].variante})`, preco: config[id].preco });
+    function adicionar(id) {
+        carrinho.push({ ...selecaoAtual[id] });
         calcularTotal();
-        alert("Adicionado ao carrinho!");
+        alert("✔️ Adicionado ao carrinho!");
     }
 
     function calcularTotal() {
-        let sub = carrinho.reduce((a, b) => a + b.preco, 0);
-        let freteSel = parseFloat(document.getElementById('select-frete').value);
-        let freteFinal = (sub >= 20000) ? 0 : freteSel;
-        document.getElementById('badge-frete').innerText = (sub >= 20000) ? "🔥 FRETE GRÁTIS ATIVADO!" : "Frete Grátis acima de 20.000 Kz";
-        document.getElementById('total-val').innerText = (sub + freteFinal).toLocaleString('pt-AO');
+        let subtotal = carrinho.reduce((a, b) => a + b.preco, 0);
+        let freteSelecionado = parseFloat(document.getElementById('select-frete').value);
+        
+        // Regra de Frete Grátis acima de 20.000 Kz
+        let freteFinal = (subtotal >= 20000) ? 0 : freteSelecionado;
+        
+        if(subtotal >= 20000) {
+            document.getElementById('aviso-frete').innerHTML = "✅ FRETE GRÁTIS ATIVADO!";
+            document.getElementById('aviso-frete').style.background = "#e8f5e9";
+        } else {
+            document.getElementById('aviso-frete').innerHTML = "Frete GRÁTIS acima de 20.000 Kz";
+        }
+
+        document.getElementById('sub-val').innerText = subtotal.toLocaleString('pt-AO');
+        document.getElementById('frete-val').innerText = freteFinal.toLocaleString('pt-AO');
+        document.getElementById('total-val').innerText = (subtotal + freteFinal).toLocaleString('pt-AO');
     }
 
     function enviarWhats() {
-        if(carrinho.length === 0) return alert("Carrinho vazio!");
-        let sub = carrinho.reduce((a, b) => a + b.preco, 0);
-        let freteFinal = (sub >= 20000) ? 0 : parseFloat(document.getElementById('select-frete').value);
-        let texto = `*PEDIDO VAKU COMERCI*\n\n`;
-        carrinho.forEach(i => texto += `• ${i.nome}: ${i.preco.toLocaleString('pt-AO')} Kz\n`);
-        texto += `\n*TOTAL: ${(sub + freteFinal).toLocaleString('pt-AO')} Kz*`;
-        window.open(`https://wa.me{numeroWhats}?text=${encodeURIComponent(texto)}`);
+        if(carrinho.length === 0) return alert("Seu carrinho está vazio!");
+        
+        let subtotal = carrinho.reduce((a, b) => a + b.preco, 0);
+        let freteSel = parseFloat(document.getElementById('select-frete').value);
+        let freteFinal = (subtotal >= 20000) ? 0 : freteSel;
+        let tipoEntrega = document.getElementById('select-frete').options[document.getElementById('select-frete').selectedIndex].text;
+
+        let texto = `*PEDIDO VAKU COMERCI 🇦🇴*\n`;
+        texto += `----------------------------\n`;
+        carrinho.forEach(item => {
+            texto += `• ${item.nome} (${item.variante}) - ${item.preco.toLocaleString('pt-AO')} Kz\n`;
+        });
+        texto += `----------------------------\n`;
+        texto += `*Subtotal:* ${subtotal.toLocaleString('pt-AO')} Kz\n`;
+        texto += `*Entrega:* ${tipoEntrega} (${freteFinal === 0 ? "Grátis" : freteFinal.toLocaleString('pt-AO') + " Kz"})\n`;
+        texto += `*TOTAL FINAL: ${(subtotal + freteFinal).toLocaleString('pt-AO')} Kz*\n`;
+
+        window.open(`https://wa.me{numeroWhatsApp}?text=${encodeURIComponent(texto)}`);
     }
+
+    inicializarLoja();
 </script>
 </body>
 </html>
