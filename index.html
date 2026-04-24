@@ -6,39 +6,49 @@
     <title>VAKU Commerce</title>
     <style>
         :root { --temu-orange: #FF6600; --bg-gray: #f7f7f7; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg-gray); color: #333; }
+        body { font-family: sans-serif; margin: 0; background: var(--bg-gray); padding-bottom: 80px; }
 
-        /* HEADER ESTILO TEMU */
-        header { background: #fff; padding: 10px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        /* HEADER */
+        header { background: #fff; padding: 10px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .top-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .logo { font-weight: 800; color: var(--temu-orange); font-size: 1.2rem; white-space: nowrap; }
-        .search-box { flex-grow: 1; background: #eee; border-radius: 20px; padding: 8px 15px; border: none; outline: none; }
-        .cart-btn { font-size: 22px; position: relative; cursor: pointer; border: none; background: none; }
+        .logo { font-weight: 800; color: var(--temu-orange); font-size: 1.2rem; }
+        .search-box { flex-grow: 1; background: #eee; border-radius: 20px; padding: 8px 15px; border: none; }
+        .cart-btn { font-size: 24px; position: relative; cursor: pointer; border: none; background: none; }
         #cart-count { position: absolute; top: -5px; right: -8px; background: var(--temu-orange); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 50%; }
 
-        /* CATEGORIAS ROLÁVEIS */
+        /* CATEGORIAS */
         .categories { display: flex; overflow-x: auto; background: #fff; padding: 12px; gap: 20px; border-bottom: 1px solid #eee; }
         .categories::-webkit-scrollbar { display: none; }
-        .categories span { white-space: nowrap; font-size: 14px; font-weight: 500; color: #555; }
-        .categories .active { color: #000; border-bottom: 2px solid #000; }
+        .categories span { white-space: nowrap; font-size: 14px; color: #555; }
 
         /* GRADE DE PRODUTOS */
         .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
-        .product-card { background: #fff; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
-        .product-img { width: 100%; aspect-ratio: 1/1; background: #f0f0f0; object-fit: cover; }
-        .product-info { padding: 10px; flex-grow: 1; }
-        .product-name { font-size: 13px; margin-bottom: 5px; height: 35px; overflow: hidden; }
-        .price-row { display: flex; align-items: center; gap: 5px; }
+        .product-card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .product-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: #fff; }
+        .product-info { padding: 10px; }
         .sale-price { color: var(--temu-orange); font-weight: bold; font-size: 16px; }
-        .old-price { text-decoration: line-through; color: #999; font-size: 12px; }
-        .add-btn { background: #000; color: #fff; border: none; width: 100%; padding: 8px; border-radius: 5px; margin-top: 8px; font-weight: bold; cursor: pointer; }
+        .add-btn { background: #000; color: #fff; border: none; width: 100%; padding: 10px; border-radius: 20px; margin-top: 8px; font-weight: bold; }
 
-        /* ÁREA DE ENTREGA E FINALIZAÇÃO */
-        .checkout-box { background: #fff; margin: 10px; padding: 15px; border-radius: 10px; border: 1px solid #ddd; }
-        .delivery-select { width: 100%; padding: 10px; border-radius: 5px; margin: 10px 0; border: 1px solid #ccc; }
-        .total-info { display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1rem; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
-        .whatsapp-btn { background: #25D366; color: white; display: block; text-align: center; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 15px; }
-        .free-shipping-alert { font-size: 12px; color: #2e7d32; font-weight: bold; text-align: center; margin-top: 5px; }
+        /* JANELA DO CARRINHO (MODAL) */
+        #cart-modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); z-index: 2000; 
+        }
+        .modal-content { 
+            background: #fff; margin: 10% auto; width: 90%; max-height: 80%; 
+            border-radius: 15px; padding: 20px; overflow-y: auto; 
+        }
+
+        /* BOTÃO FLUTUANTE WHATSAPP */
+        .wa-float {
+            position: fixed; bottom: 20px; right: 20px; background: #25D366; 
+            color: white; width: 60px; height: 60px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-decoration: none; z-index: 1500;
+        }
+
+        .delivery-section { margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
+        select { width: 100%; padding: 10px; border-radius: 8px; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -46,133 +56,106 @@
 <header>
     <div class="top-bar">
         <div class="logo">VAKU</div>
-        <input type="text" class="search-box" placeholder="Pesquisar na VAKU...">
-        <button class="cart-btn">🛒<span id="cart-count">0</span></button>
+        <input type="text" class="search-box" placeholder="Pesquisar...">
+        <button class="cart-btn" onclick="toggleCart()">🛒<span id="cart-count">0</span></button>
     </div>
 </header>
 
 <nav class="categories">
-    <span class="active">Tudo</span>
-    <span>Mulher</span>
-    <span>Homem</span>
-    <span>Criança</span>
-    <span>Jóias</span>
-    <span>Electrónica</span>
-    <span>Promoção</span>
+    <span><b>Tudo</b></span><span>Mulher</span><span>Homem</span><span>Criança</span><span>Jóias</span><span>Electrónica</span>
 </nav>
 
 <div class="product-grid">
-    <!-- Exemplo de Produto 1 -->
+    <!-- Produto 1 -->
     <div class="product-card">
-        <img src="https://placeholder.com" class="product-img">
+        <img src="https://unsplash.com" class="product-img">
         <div class="product-info">
-            <div class="product-name">Ténis Sport Lux Premium</div>
-            <div class="price-row">
-                <span class="sale-price">15.000 Kz</span>
-                <span class="old-price">22.000 Kz</span>
-            </div>
-            <button class="add-btn" onclick="addToCart('Ténis Sport Lux', 15000)">Adicionar</button>
+            <div style="font-size: 13px;">Ténis Sport Red</div>
+            <div class="sale-price">15.000 Kz</div>
+            <button class="add-btn" onclick="addToCart('Ténis Sport Red', 15000)">Adicionar</button>
         </div>
     </div>
-    <!-- Exemplo de Produto 2 -->
+    <!-- Produto 2 -->
     <div class="product-card">
-        <img src="https://placeholder.com" class="product-img">
+        <img src="https://unsplash.com" class="product-img">
         <div class="product-info">
-            <div class="product-name">Relógio Digital Smart</div>
-            <div class="price-row">
-                <span class="sale-price">7.500 Kz</span>
-                <span class="old-price">12.000 Kz</span>
-            </div>
-            <button class="add-btn" onclick="addToCart('Relógio Smart', 7500)">Adicionar</button>
+            <div style="font-size: 13px;">Relógio Silver</div>
+            <div class="sale-price">7.500 Kz</div>
+            <button class="add-btn" onclick="addToCart('Relógio Silver', 7500)">Adicionar</button>
         </div>
     </div>
 </div>
 
-<div class="checkout-box">
-    <label><b>Opções de Entrega:</b></label>
-    <select id="delivery-option" class="delivery-select" onchange="calculateTotal()">
-        <option value="0">--- Escolha como quer receber ---</option>
-        <optgroup label="Ponto Estratégico (2.000 Kz)">
-            <option value="2000">Mercado do 30 km30</option>
-            <option value="2000">Vila de Viana (Ponte Amarela)</option>
-            <option value="2000">Mercado dos Escongoleses</option>
-            <option value="2000">Triângulo dos Escongoleses</option>
-            <option value="2000">Hoji Ya Henda</option>
-            <option value="2000">Mercado do Kicolo</option>
-        </optgroup>
-        <optgroup label="Levantamento Grátis (Vou buscar)">
-            <option value="0">Loja: Mercado do 30 km30</option>
-            <option value="0">Loja: Triângulo dos Escongoleses</option>
-            <option value="0">Loja: Hoji Ya Henda</option>
-        </optgroup>
-    </select>
+<!-- Janela do Carrinho -->
+<div id="cart-modal">
+    <div class="modal-content">
+        <h3>Seu Carrinho</h3>
+        <div id="cart-items">O carrinho está vazio.</div>
+        
+        <div class="delivery-section">
+            <label><b>Onde entregar?</b></label>
+            <select id="delivery-option" onchange="updateModalTotal()">
+                <option value="2000">Ponto Estratégico (2.000 Kz)</option>
+                <option value="0">Vou buscar na loja (Grátis)</option>
+            </select>
+        </div>
 
-    <div id="shipping-msg" class="free-shipping-alert"></div>
-
-    <div class="total-info">
-        <span>Total:</span>
-        <span id="display-total">0 Kz</span>
+        <div style="margin-top: 20px; font-weight: bold; font-size: 18px;">
+            Total: <span id="modal-total">0 Kz</span>
+        </div>
+        
+        <button class="add-btn" style="background: #25D366;" onclick="sendWhatsApp()">Finalizar no WhatsApp</button>
+        <button class="add-btn" style="background: #ccc; color: #333;" onclick="toggleCart()">Fechar</button>
     </div>
-
-    <a href="#" class="whatsapp-btn" onclick="sendWhatsApp()">Finalizar Pedido no WhatsApp</a>
 </div>
+
+<!-- Ícone do WhatsApp -->
+<a href="javascript:void(0)" class="wa-float" onclick="toggleCart()">🟢</a>
 
 <script>
     let cart = [];
-    let itemsTotal = 0;
-    const FREE_SHIPPING_LIMIT = 20000;
+    let subtotal = 0;
 
     function addToCart(name, price) {
         cart.push({name, price});
-        itemsTotal += price;
-        document.getElementById('cart-count').innerText = cart.length;
-        calculateTotal();
-        alert(name + " adicionado ao carrinho!");
+        subtotal += price;
+        updateUI();
+        alert("Adicionado!");
     }
 
-    function calculateTotal() {
-        let deliveryCost = parseFloat(document.getElementById('delivery-option').value);
-        let msg = document.getElementById('shipping-msg');
-        
-        // Regra de entrega grátis acima de 20.000 Kz
-        if (itemsTotal >= FREE_SHIPPING_LIMIT) {
-            deliveryCost = 0;
-            msg.innerText = "✨ Parabéns! Você ganhou Entrega Grátis da VAKU!";
-        } else {
-            msg.innerText = "";
+    function updateUI() {
+        document.getElementById('cart-count').innerText = cart.length;
+        let itemsDiv = document.getElementById('cart-items');
+        if(cart.length > 0) {
+            itemsDiv.innerHTML = cart.map(item => `<p>${item.name} - ${item.price} Kz</p>`).join('');
         }
+        updateModalTotal();
+    }
 
-        let finalTotal = itemsTotal + deliveryCost;
-        document.getElementById('display-total').innerText = finalTotal.toLocaleString() + " Kz";
+    function updateModalTotal() {
+        let delivery = parseInt(document.getElementById('delivery-option').value);
+        // Regra de entrega grátis acima de 20.000 Kz
+        if (subtotal >= 20000) delivery = 0;
+        
+        document.getElementById('modal-total').innerText = (subtotal + delivery).toLocaleString() + " Kz";
+    }
+
+    function toggleCart() {
+        let modal = document.getElementById('cart-modal');
+        modal.style.display = (modal.style.display === 'block') ? 'none' : 'block';
     }
 
     function sendWhatsApp() {
-        if (cart.length === 0) {
-            alert("Seu carrinho está vazio!");
-            return;
-        }
-
-        const deliverySelect = document.getElementById('delivery-option');
-        const deliveryPoint = deliverySelect.options[deliverySelect.selectedIndex].text;
-        let deliveryCost = parseFloat(deliverySelect.value);
+        if(cart.length === 0) return alert("Adicione produtos primeiro!");
         
-        if (itemsTotal >= FREE_SHIPPING_LIMIT) deliveryCost = 0;
+        let delivery = parseInt(document.getElementById('delivery-option').value);
+        if (subtotal >= 20000) delivery = 0;
 
-        let message = `*NOVO PEDIDO - VAKU Commerce*\n\n`;
-        message += `*Produtos:*\n`;
-        cart.forEach(item => {
-            message += `- ${item.name}: ${item.price.toLocaleString()} Kz\n`;
-        });
-        
-        message += `\n*Subtotal:* ${itemsTotal.toLocaleString()} Kz`;
-        message += `\n*Entrega:* ${deliveryPoint}`;
-        message += `\n*Taxa de Entrega:* ${deliveryCost.toLocaleString()} Kz`;
-        message += `\n*TOTAL A PAGAR:* ${(itemsTotal + deliveryCost).toLocaleString()} Kz`;
-        message += `\n\n_Pagamento na entrega ou no local da busca._`;
+        let msg = `*VAKU Commerce - Pedido*\n\n`;
+        cart.forEach(i => msg += `- ${i.name}\n`);
+        msg += `\n*Total com entrega:* ${subtotal + delivery} Kz\n*Pagamento na entrega.*`;
 
-        const phone = "244926008439";
-        const url = "https://wa.me" + phone + "?text=" + encodeURIComponent(message);
-        window.open(url, '_blank');
+        window.open(`https://wa.me{encodeURIComponent(msg)}`);
     }
 </script>
 
