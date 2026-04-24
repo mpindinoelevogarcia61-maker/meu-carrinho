@@ -3,28 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAKU Commerce</title>
     <style>
-        :root { --temu-orange: #FF6600; }
-        body { font-family: sans-serif; margin: 0; background: #fff; overflow: hidden; }
-        header { padding: 10px; border-bottom: 1px solid #eee; }
-        .top-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .logo { font-weight: 800; color: var(--temu-orange); font-size: 1.2rem; }
-        .search-box { flex-grow: 1; background: #eee; border-radius: 20px; padding: 8px 15px; border: none; font-size: 14px; color: #666; }
-        .categories { display: flex; overflow-x: auto; padding: 12px 5px; gap: 20px; white-space: nowrap; }
-        .categories::-webkit-scrollbar { display: none; }
-        .categories span { font-size: 14px; color: #333; font-weight: 500; }
+        :root { --orange: #FF6600; }
+        body { font-family: sans-serif; margin: 0; background: #f4f4f4; padding-bottom: 80px; }
+        header { background: #fff; padding: 10px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo { font-weight: bold; color: var(--orange); font-size: 1.2rem; }
+        .search { flex-grow: 1; background: #eee; border-radius: 20px; padding: 8px; border: none; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+        .card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; padding-bottom: 10px; }
+        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        .p-name { font-size: 13px; padding: 5px; height: 32px; overflow: hidden; }
+        .p-price { color: var(--orange); font-weight: bold; margin-bottom: 8px; }
+        .btn-add { background: #000; color: #fff; border: none; padding: 8px 15px; border-radius: 20px; width: 80%; cursor: pointer; }
+        
+        /* Botão flutuante do Carrinho/WhatsApp */
+        .float-cart { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: #fff; padding: 15px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; }
     </style>
 </head>
 <body>
+
 <header>
-    <div class="top-bar">
-        <div class="logo">VAKU</div>
-        <div class="search-box">Pesquisar na VAKU...</div>
-        <div style="font-size: 20px;">🛒</div>
-    </div>
+    <div class="logo">VAKU</div>
+    <input type="text" class="search" placeholder="Pesquisar produtos...">
+    <div id="cart-counter" style="font-weight:bold">🛒 0</div>
 </header>
-<nav class="categories">
-    <span><b>Tudo</b></span><span>Mulher</span><span>Homem</span><span>Criança</span><span>Jóias</span><span>Studio</span><span>Electrónica</span><span>Promoção</span>
-</nav>
+
+<div class="grid" id="produtos">
+    <!-- O código vai criar os produtos aqui -->
+</div>
+
+<a href="javascript:void(0)" class="float-cart" onclick="finalizarPedido()">
+    Finalizar Pedido (WhatsApp)
+</a>
+
+<script>
+    // LISTA DE PRODUTOS (Aqui podes pôr os teus 100 produtos)
+    const lista = [
+        { nome: "Produto Exemplo 1", preco: 5000, foto: "https://placeholder.com" },
+        { nome: "Produto Exemplo 2", preco: 12000, foto: "https://placeholder.com" }
+    ];
+
+    let carrinho = [];
+
+    function render() {
+        const div = document.getElementById('produtos');
+        div.innerHTML = lista.map((p, i) => `
+            <div class="card">
+                <img src="${p.foto}">
+                <div class="p-name">${p.nome}</div>
+                <div class="p-price">${p.preco.toLocaleString()} Kz</div>
+                <button class="btn-add" onclick="add(${i})">Comprar</button>
+            </div>
+        `).join('');
+    }
+
+    function add(i) {
+        carrinho.push(lista[i]);
+        document.getElementById('cart-counter').innerText = "🛒 " + carrinho.length;
+        alert("Adicionado ao carrinho!");
+    }
+
+    function finalizarPedido() {
+        if(carrinho.length === 0) return alert("Adicione produtos primeiro!");
+        
+        let msg = "*Novo Pedido VAKU Commerce*\n\n";
+        let total = 0;
+        carrinho.forEach(item => {
+            msg += `- ${item.nome}: ${item.preco} Kz\n`;
+            total += item.preco;
+        });
+        msg += `\n*Total: ${total} Kz*`;
+        msg += `\n\n_Pagamento na entrega/local._`;
+
+        window.open(`https://wa.me{encodeURIComponent(msg)}`);
+    }
+
+    render();
+</script>
 </body>
 </html>
